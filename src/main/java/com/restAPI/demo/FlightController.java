@@ -1,5 +1,6 @@
 package com.restAPI.demo;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,9 +11,11 @@ import org.springframework.web.bind.annotation.*;
 class FlightController {
 
     private final FlightRepository repository;
+    private final FlightScheduleRepository scheduleRepository;
 
-    FlightController(FlightRepository repository) {
+    FlightController(FlightRepository repository, FlightScheduleRepository scheduleRepository) {
         this.repository = repository;
+        this.scheduleRepository = scheduleRepository;
     }
 
     @GetMapping
@@ -26,5 +29,11 @@ class FlightController {
     @GetMapping("/{id}")
     Flight getFlightById(@PathVariable Long id) {
         return repository.findById(id).orElseThrow(() -> new RuntimeException("Flight not found"));
+    }
+
+    @GetMapping("/{id}/schedules")
+    List<FlightSchedule> getFlightSchedules(@PathVariable Long id, @RequestParam String dates) {
+        LocalDate date = LocalDate.parse(dates);
+        return scheduleRepository.findByFlightIdAndDate(id, date);
     }
 }

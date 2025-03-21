@@ -3,30 +3,35 @@ package com.restAPI.demo;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import java.time.LocalDate;
 
 @Entity
 class FlightSchedule {
 
     private @Id @GeneratedValue Long id;
+    private Long flightId;
     private String flightNumber;
     private String origin;
     private String destination;
+    private LocalDate date;
 
-    // Default constructor for JPA
     public FlightSchedule() {
     }
 
-    // Add this custom constructor
-    public FlightSchedule(String flightNumber, String origin, String destination) {
+    public FlightSchedule(Long flightId, String flightNumber, String origin, String destination, LocalDate date) {
+        this.flightId = flightId;
         this.flightNumber = flightNumber;
         this.origin = origin;
         this.destination = destination;
+        this.date = date;
     }
-
-    // Getters & Setters...
 
     public Long getId() {
         return id;
+    }
+
+    public Long getFlightId() {
+        return flightId;
     }
 
     public String getFlightNumber() {
@@ -41,8 +46,16 @@ class FlightSchedule {
         return destination;
     }
 
+    public LocalDate getDate() {
+        return date;
+    }
+
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setFlightId(Long flightId) {
+        this.flightId = flightId;
     }
 
     public void setFlightNumber(String flightNumber) {
@@ -55,5 +68,9 @@ class FlightSchedule {
 
     public void setDestination(String destination) {
         this.destination = destination;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 }
