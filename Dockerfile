@@ -1,25 +1,26 @@
-# Stage 1: Build the app using Maven + Java
-FROM maven:3.9.6-eclipse-temurin-21-alpine AS builder
+# Multi-stage build for flight-service
 
+# Stage 1: Build and test the application
+FROM maven:3.9-eclipse-temurin-21-alpine AS build
 WORKDIR /app
 
-# Copy your pom.xml and source code to the container
+# Copy the pom.xml file
 COPY pom.xml .
-COPY src ./src
+# Copy the src directory
+COPY src/ ./src/
 
-# Build the application and skip tests for faster build (optional)
-RUN mvn clean package -DskipTests
+# Run tests and build the JAR file
+RUN mvn clean test package
 
-# Stage 2: Create the runtime image with only the JRE and your jar
-FROM eclipse-temurin:21-jdk-alpine
-
+# Stage 2: Create the runtime image
+FROM openjdk:21-slim
 WORKDIR /app
 
-# Copy the jar built in the builder stage to this image
-COPY --from=builder /app/target/*.jar app.jar
+# Copy the JAR file from the build stage
+COPY --from=build /app/target/*.jar app.jar
 
-# Expose port 8080
+# Expose the port the application runs on
 EXPOSE 8080
 
-# Run the jar
+# Set the entry point to run the JAR file
 ENTRYPOINT ["java", "-jar", "app.jar"]
